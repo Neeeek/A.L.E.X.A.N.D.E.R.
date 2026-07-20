@@ -1,0 +1,1 @@
+export const INCIDENT_DATA_URL = "https://gist.github.com/Neeeek/ee35f06fee2707ff6cbf5ba0f0b0e76a/raw/incident.json"

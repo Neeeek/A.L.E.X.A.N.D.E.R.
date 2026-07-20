@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.L.E.X.A.N.D.E.R. Status</title>
+  <meta name="description" content="Live uptime monitor for A.L.E.X.A.N.D.E.R." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛰️</text></svg>" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob blob-a"></span>
+    <span class="blob blob-b"></span>
+    <span class="blob blob-c"></span>
+  </div>
+
+  <div class="page">
+    <header class="site-header enter" style="--delay: 0">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🛰️</span>
+        <h1 class="brand-title">A.L.E.X.A.N.D.E.R.</h1>
+      </div>
+      <p
+        class="brand-subtitle"
+        title="Automated Logging & Evaluation for eXtreme Anti-bullying, Nominal Defense & Emergency Response"
+      >
+        Automated Logging &amp; Evaluation for e<b>X</b>treme Anti-bullying, Nominal Defense &amp; Emergency
+        <b>R</b>esponse
+      </p>
+    </header>
+
+    <main>
+      <!-- LOADING STATE -->
+      <section class="panel loading-panel enter" id="loadingPanel" style="--delay: 1">
+        <div class="skeleton-badge"></div>
+        <div class="skeleton-hero"></div>
+        <div class="skeleton-row">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+        <p class="loading-text">pinging the mainframe<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+      </section>
+
+      <!-- ERROR STATE -->
+      <section class="panel error-panel enter" id="errorPanel" hidden style="--delay: 1">
+        <div class="error-icon" aria-hidden="true">🛰️💥</div>
+        <h2 class="error-title">Signal Lost</h2>
+        <p class="error-message" id="errorMessage">Couldn't reach the incident log. The satellite may be sulking.</p>
+        <button class="retry-btn" id="retryBtn" type="button">
+          <span>Try Again</span>
+        </button>
+      </section>
+
+      <!-- SUCCESS STATE -->
+      <section class="panel status-panel enter" id="statusPanel" hidden style="--delay: 1">
+        <div class="badge-wrap enter" style="--delay: 2">
+          <span class="status-badge" id="statusBadge">
+            <span class="badge-dot"></span>
+            <span class="badge-text">OPERATIONAL</span>
+          </span>
+        </div>
+
+        <div class="hero enter" style="--delay: 3">
+          <div class="hero-number" id="heroNumber">0</div>
+          <div class="hero-label">days without a Nerf-dart incident</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card enter" style="--delay: 4">
+            <div class="stat-value" id="uptimeValue">--%</div>
+            <div class="stat-label">Uptime</div>
+          </div>
+          <div class="stat-card enter" style="--delay: 5">
+            <div class="stat-value" id="incidentCountValue">--</div>
+            <div class="stat-label">Historical Incidents</div>
+          </div>
+          <div class="stat-card chart-card enter" style="--delay: 6">
+            <div class="stat-label">30-Day History</div>
+            <div class="sparkline" id="sparkline" role="img" aria-label="30 day incident history chart"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="milestone-banner" id="milestoneBanner" role="status" aria-live="polite" hidden></div>
+    </main>
+
+    <footer class="site-footer enter" style="--delay: 7">
+      <p>Last recorded incident: <strong id="lastIncidentDate">—</strong></p>
+      <p class="footer-note">A.L.E.X.A.N.D.E.R. Status &bull; refreshed automatically &bull; not legally binding</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
