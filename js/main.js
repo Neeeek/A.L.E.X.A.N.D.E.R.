@@ -1,8 +1,8 @@
 import { INCIDENT_DATA_URL } from "../config.js";
 
 // ---- joke config ---------------------------------------------------------
-// Arbitrary "historical incident count" used purely for the fake uptime %
-// stat and the mock sparkline. Not sourced from the gist — it's set dressing.
+// Fallback "historical incident count" used only when the gist doesn't
+// provide an `incidents` array (older gist format). Real data takes priority.
 const HISTORICAL_INCIDENT_COUNT = 12;
 const MILESTONES = [7, 30, 100, 365];
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // re-fetch every 5 minutes
@@ -44,7 +44,7 @@ async function getIncidentData() {
   if (!data || typeof data.lastIncidentDate !== "string") {
     throw new Error("Incident data is malformed.");
   }
-  return data; // { lastIncidentDate: "YYYY-MM-DD", note?: string }
+  return data; // { lastIncidentDate: "YYYY-MM-DD", incidents?: string[], note?: string }
 }
 
 function daysSince(dateString) {
@@ -61,7 +61,12 @@ async function renderStatus() {
   try {
     const data = await getIncidentData();
     const days = daysSince(data.lastIncidentDate);
-    return { days, lastIncidentDate: data.lastIncidentDate, status: "operational" };
+    return {
+      days,
+      lastIncidentDate: data.lastIncidentDate,
+      incidents: Array.isArray(data.incidents) ? data.incidents : null,
+      status: "operational",
+    };
   } catch (err) {
     return { error: true, message: err.message };
   }
@@ -115,10 +120,10 @@ function animateCountUp(el, from, to, duration = 1200) {
   requestAnimationFrame(tick);
 }
 
-// ---- sparkline (mock 30-day incident history) --------------------------
+// ---- sparkline (30-day incident history) --------------------------------
 
-// Small deterministic PRNG so the chart looks the same across reloads
-// instead of jittering randomly every time.
+// Small deterministic PRNG so cosmetic bar-height jitter is stable across
+// reloads instead of jittering randomly every time.
 function seededRandom(seed) {
   let t = seed + 0x6d2b79f5;
   return function () {
@@ -129,37 +134,84 @@ function seededRandom(seed) {
   };
 }
 
-function buildSparklineData() {
-  const days = 30;
-  const rand = seededRandom(HISTORICAL_INCIDENT_COUNT * 1337);
-  // scatter a handful of "incident" days across the older part of the
-  // window so the most recent days always read as healthy/green.
-  const incidentCount = Math.min(Math.max(HISTORICAL_INCIDENT_COUNT % 6, 2), 5);
-  const incidentIdx = new Set();
-  while (incidentIdx.size < incidentCount) {
-    incidentIdx.add(Math.floor(rand() * (days - 6))); // keep last 6 days clean
+function hashString(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) | 0;
   }
+  return h;
+}
+
+function formatDateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+// Parses gist `incidents: ["YYYY-MM-DD", ...]`. Repeated dates mean multiple
+// incidents happened that same day — kept as separate entries so counts add up.
+function parseIncidentDates(incidents) {
+  if (!Array.isArray(incidents)) return null;
+  return incidents
+    .filter((d) => typeof d === "string")
+    .map((d) => new Date(d + "T00:00:00"))
+    .filter((d) => !isNaN(d));
+}
+
+function buildSparklineData(incidentDates) {
+  const days = 30;
+  const today = new Date();
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const countByDay = new Map();
+  (incidentDates || []).forEach((d) => {
+    const key = formatDateKey(d);
+    countByDay.set(key, (countByDay.get(key) || 0) + 1);
+  });
 
   const bars = [];
-  for (let i = 0; i < days; i++) {
-    const isIncident = incidentIdx.has(i);
-    const height = isIncident ? 25 + rand() * 20 : 65 + rand() * 35;
-    bars.push({ isIncident, height: Math.round(height) });
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(todayMidnight);
+    date.setDate(date.getDate() - i);
+    const key = formatDateKey(date);
+    const count = countByDay.get(key) || 0;
+    const isIncident = count > 0;
+    const height = isIncident
+      ? Math.min(30 + count * 20, 95)
+      : Math.round(65 + seededRandom(hashString(key))() * 35);
+    bars.push({ isIncident, count, height, date });
   }
   return bars;
 }
 
-function renderSparkline() {
-  const bars = buildSparklineData();
+// Used only when the gist has no `incidents` array (older gist format) —
+// scatters a handful of incident days within the 30-day window so the
+// chart still reads as a real dashboard instead of a flat green line.
+function buildFallbackIncidentDates(count) {
   const today = new Date();
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const rand = seededRandom(count * 1337);
+  const incidentCount = Math.min(Math.max(count % 6, 2), 5);
+  const daysAgoSet = new Set();
+  while (daysAgoSet.size < incidentCount) {
+    daysAgoSet.add(6 + Math.floor(rand() * 24)); // 6-29 days ago, keep last 6 days clean
+  }
+  return [...daysAgoSet].map((daysAgo) => {
+    const d = new Date(todayMidnight);
+    d.setDate(d.getDate() - daysAgo);
+    return d;
+  });
+}
+
+function renderSparkline(incidentDates) {
+  const bars = buildSparklineData(incidentDates);
   sparklineEl.innerHTML = "";
   bars.forEach((bar, i) => {
-    const daysAgo = bars.length - 1 - i;
-    const date = new Date(today);
-    date.setDate(date.getDate() - daysAgo);
-    const label = `${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })} · ${
-      bar.isIncident ? "degraded" : "operational"
-    }`;
+    const dateLabel = bar.date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    const label = bar.isIncident
+      ? `${dateLabel} · ${bar.count} incident${bar.count > 1 ? "s" : ""}`
+      : `${dateLabel} · operational`;
 
     const el = document.createElement("div");
     el.className = "spark-bar" + (bar.isIncident ? " incident" : "");
@@ -223,14 +275,17 @@ async function loadStatus() {
     return;
   }
 
-  const { days, lastIncidentDate } = result;
+  const { days, lastIncidentDate, incidents } = result;
 
   showSuccess();
   animateCountUp(heroNumberEl, hasLoadedOnce ? lastRenderedDays ?? 0 : 0, days);
 
-  const uptimePct = (days / (days + HISTORICAL_INCIDENT_COUNT)) * 100;
+  const incidentDates = parseIncidentDates(incidents);
+  const historicalCount = incidentDates ? incidentDates.length : HISTORICAL_INCIDENT_COUNT;
+
+  const uptimePct = (days / (days + historicalCount)) * 100;
   uptimeValueEl.textContent = `${uptimePct.toFixed(1)}%`;
-  incidentCountValueEl.textContent = String(HISTORICAL_INCIDENT_COUNT);
+  incidentCountValueEl.textContent = String(historicalCount);
 
   const parsedDate = new Date(lastIncidentDate + "T00:00:00");
   lastIncidentDateEl.textContent = parsedDate.toLocaleDateString(undefined, {
@@ -240,7 +295,7 @@ async function loadStatus() {
   });
 
   if (!hasLoadedOnce) {
-    renderSparkline();
+    renderSparkline(incidentDates || buildFallbackIncidentDates(HISTORICAL_INCIDENT_COUNT));
   }
 
   maybeCelebrateMilestone(days);
