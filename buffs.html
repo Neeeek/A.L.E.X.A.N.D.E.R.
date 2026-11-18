@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A.L.E.X.A.N.D.E.R. Buff Dojo</title>
-  <meta name="description" content="Pre-interview blessings, stat buffs and a full debuff cleanse — cast with hand seals." />
+  <title>Додзё баффов A.L.E.X.A.N.D.E.R.</title>
+  <meta name="description" content="Благословения перед собеседованием, баффы к характеристикам и полное снятие дебаффов — с помощью ручных печатей." />
   <!-- unlisted page: not linked from the main page and kept out of search results -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#0a0f1d" />
@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;700&family=Oxanium:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;700&display=swap"
     rel="stylesheet"
   />
 
@@ -24,7 +24,7 @@
   <!-- backdrop: the photo itself, blurred into a colour field, plus drifting kanji -->
   <div class="backdrop" id="backdrop" aria-hidden="true">
     <div class="backdrop-photo"></div>
-    <div class="backdrop-kanji">
+    <div class="backdrop-kanji" lang="ja">
       <span style="--x: 4%; --y: 14%; --size: 1.1; --speed: 160">仕事成功</span>
       <span style="--x: 92%; --y: 8%; --size: 0.8; --speed: 260">開運招福</span>
       <span style="--x: 47%; --y: 62%; --size: 0.7; --speed: 340">厄除け</span>
@@ -51,7 +51,7 @@
     <!-- STAGE: the cut-out figure, sticky while the page scrolls -->
     <div class="stage-col" id="stageCol">
       <div class="stage" id="stage">
-        <div class="stage-glyph" aria-hidden="true">
+        <div class="stage-glyph" lang="ja" aria-hidden="true">
           <span class="stage-glyph-main" id="stageGlyph">福</span>
           <span class="stage-glyph-sub" id="stageGlyphSub">開運招福</span>
         </div>
@@ -60,7 +60,7 @@
           <div class="aura" aria-hidden="true"></div>
 
           <!-- three stacked layers so each ring spins on the compositor without repainting -->
-          <div class="spell-wrap" aria-hidden="true">
+          <div class="spell-wrap" lang="ja" aria-hidden="true">
             <svg class="spell spell-outer" viewBox="0 0 600 600">
               <defs>
                 <path id="ringOuter" d="M300 300 m-266 0 a266 266 0 1 1 532 0 a266 266 0 1 1 -532 0" />
@@ -103,7 +103,7 @@
               src="assets/1-cutout.webp"
               width="896"
               height="1195"
-              alt="A.L.E.X.A.N.D.E.R. in a cap and grey jacket, forming a hand seal while glowing spell circles swirl around him"
+              alt="A.L.E.X.A.N.D.E.R. в кепке и серой куртке складывает ручную печать, вокруг него светятся круги заклинаний"
             />
           </div>
         </div>
@@ -115,107 +115,107 @@
       <section class="intro" data-glyph="福" data-glyph-sub="開運招福">
         <p class="kicker" data-reveal style="--d: 0">
           <span lang="ja">祝福 · 強化 · 浄化</span>
-          <span>A.L.E.X.A.N.D.E.R. Buff Dojo</span>
+          <span>Додзё баффов A.L.E.X.A.N.D.E.R.</span>
         </p>
         <h1 class="hero-title" data-reveal style="--d: 1">
-          Get blessed.<br />Get buffed.<br /><span class="glow">Get hired.</span>
+          Благословись.<br />Прокачайся.<br /><span class="glow">Получи оффер.</span>
         </h1>
         <p class="hero-lead" data-reveal style="--d: 2">
-          Pre-interview blessings, stat buffs and a full debuff cleanse — woven with hand seals and
-          glowing spell circles, straight out of your favourite ninja anime.
+          Благословения перед собеседованием, баффы к характеристикам и полное снятие дебаффов —
+          с помощью ручных печатей и светящихся кругов заклинаний, прямо как в любимом аниме про ниндзя.
         </p>
 
         <div class="hud" data-reveal style="--d: 3">
           <div class="hud-head">
-            <span class="hud-title">Your status effects</span>
+            <span class="hud-title">Твои эффекты</span>
             <span class="hud-seals" id="sealTrail" aria-live="polite"></span>
           </div>
           <ul class="hud-effects" id="hudEffects"></ul>
-          <button class="cast-btn" id="castBtn" type="button">Cast a free trial buff</button>
+          <button class="cast-btn" id="castBtn" type="button">Наложить бесплатный пробный бафф</button>
         </div>
 
         <p class="acronym" data-reveal style="--d: 4">
-          <b>A</b>uspicious <b>L</b>uck <b>E</b>nchantments, e<b>X</b>p <b>A</b>mplification,
-          <b>N</b>egativity <b>D</b>ispel &amp; <b>E</b>mergency <b>R</b>e-buffs
+          <b>А</b>ура <b>Л</b>идерства, <b>Е</b>диный <b>К</b>арьерный <b>С</b>глазоотвод,
+          <b>А</b>нтидебаффный <b>Н</b>ейтрализатор и <b>Д</b>уховная <b>Р</b>егенерация
         </p>
 
-        <div class="scroll-hint" aria-hidden="true"><span></span>scroll to channel chakra</div>
+        <div class="scroll-hint" aria-hidden="true"><span></span>листай, чтобы накопить чакру</div>
       </section>
 
       <section class="block" data-glyph="強" data-glyph-sub="強化" aria-labelledby="servicesTitle">
         <header class="block-head" data-reveal>
-          <p class="kicker"><span lang="ja">サービス</span><span>Services</span></p>
-          <h2 id="servicesTitle">Three ways to enter the battlefield stronger</h2>
+          <p class="kicker"><span lang="ja">サービス</span><span>Услуги</span></p>
+          <h2 id="servicesTitle">Три способа выйти на поле боя сильнее</h2>
         </header>
 
         <div class="cards">
           <article class="card" data-reveal>
-            <div class="seal-icon" aria-hidden="true">
+            <div class="seal-icon" lang="ja" aria-hidden="true">
               <svg><use href="#mini-seal" /></svg><span>福</span>
             </div>
             <div class="card-body">
-              <h3>Blessing of Great Fortune</h3>
+              <h3>Благословение великой удачи</h3>
               <p>
-                A full-body luck enchantment sealed with a three-seal combo. Recommended before
-                interviews, demos, Friday deploys and any meeting that could have been an email.
+                Полное зачарование на удачу, запечатанное комбо из трёх печатей. Рекомендуется перед
+                собеседованиями, демо, деплоями в пятницу и любыми созвонами, которые могли быть письмом.
               </p>
               <ul class="effects">
-                <li class="up">+25 Luck</li>
-                <li class="up">+10 Charisma</li>
-                <li class="up">Coffee machine always works</li>
+                <li class="up">+25 к удаче</li>
+                <li class="up">+10 к харизме</li>
+                <li class="up">Кофемашина всегда работает</li>
               </ul>
               <dl class="meta">
-                <div><dt>Duration</dt><dd>24 h</dd></div>
-                <div><dt>Price</dt><dd>1 coffee ☕</dd></div>
+                <div><dt>Длительность</dt><dd>24 ч</dd></div>
+                <div><dt>Цена</dt><dd>1 кофе ☕</dd></div>
               </dl>
             </div>
           </article>
 
           <article class="card featured" data-reveal>
-            <span class="card-tag">Most cast</span>
-            <div class="seal-icon" aria-hidden="true">
+            <span class="card-tag">Хит</span>
+            <div class="seal-icon" lang="ja" aria-hidden="true">
               <svg><use href="#mini-seal" /></svg><span>強</span>
             </div>
             <div class="card-body">
-              <h3>Pre-Interview Buff Pack</h3>
+              <h3>Пакет баффов перед собеседованием</h3>
               <p>
-                Five stacking buffs applied minutes before you join the call. Works in person and
-                through any webcam — chakra travels fine over Wi-Fi.
+                Пять стакающихся баффов за несколько минут до звонка. Работает вживую и через любую
+                веб-камеру — чакра отлично проходит по Wi-Fi.
               </p>
               <ul class="effects">
-                <li class="up">+20 Confidence</li>
-                <li class="up">+15 Eloquence</li>
-                <li class="up">+10 Eye contact through the camera</li>
-                <li class="up">Resistance to “Where do you see yourself in 5 years?”</li>
-                <li class="up">Immunity to awkward silence</li>
+                <li class="up">+20 к уверенности</li>
+                <li class="up">+15 к красноречию</li>
+                <li class="up">+10 к зрительному контакту через камеру</li>
+                <li class="up">Сопротивление вопросу «Кем вы видите себя через 5 лет?»</li>
+                <li class="up">Иммунитет к неловкому молчанию</li>
               </ul>
               <dl class="meta">
-                <div><dt>Duration</dt><dd>Until the offer</dd></div>
-                <div><dt>Price</dt><dd>1 bowl of ramen 🍜</dd></div>
+                <div><dt>Длительность</dt><dd>До оффера</dd></div>
+                <div><dt>Цена</dt><dd>1 миска рамена 🍜</dd></div>
               </dl>
             </div>
           </article>
 
           <article class="card" data-reveal>
-            <div class="seal-icon red" aria-hidden="true">
+            <div class="seal-icon red" lang="ja" aria-hidden="true">
               <svg><use href="#mini-seal" /></svg><span>浄</span>
             </div>
             <div class="card-body">
-              <h3>Total Debuff Cleanse</h3>
+              <h3>Полное снятие дебаффов</h3>
               <p>
-                A purification seal that wipes every negative status effect in one cast. No potions,
-                no cooldown anxiety, no lingering curses.
+                Печать очищения, которая одним заклинанием снимает все негативные эффекты. Без зелий,
+                без тревоги из-за перезарядки, без затяжных проклятий.
               </p>
               <ul class="effects">
-                <li class="down">Impostor syndrome</li>
-                <li class="down">Monday fatigue</li>
-                <li class="down">Rejection-email curse</li>
-                <li class="down">“We’ll get back to you” poison</li>
-                <li class="down">Stuck-on-mute paralysis</li>
+                <li class="down">Синдром самозванца</li>
+                <li class="down">Усталость понедельника</li>
+                <li class="down">Проклятие письма с отказом</li>
+                <li class="down">Яд «Мы вам перезвоним»</li>
+                <li class="down">Паралич «У вас выключен микрофон»</li>
               </ul>
               <dl class="meta">
-                <div><dt>Cooldown</dt><dd>1 week</dd></div>
-                <div><dt>Price</dt><dd>2 cookies 🍪</dd></div>
+                <div><dt>Перезарядка</dt><dd>1 неделя</dd></div>
+                <div><dt>Цена</dt><dd>2 печеньки 🍪</dd></div>
               </dl>
             </div>
           </article>
@@ -224,71 +224,71 @@
 
       <section class="block" data-glyph="術" data-glyph-sub="秘伝の術" aria-labelledby="techTitle">
         <header class="block-head" data-reveal>
-          <p class="kicker"><span lang="ja">術</span><span>Techniques</span></p>
-          <h2 id="techTitle">From the sensei’s scroll</h2>
+          <p class="kicker"><span lang="ja">術</span><span>Техники</span></p>
+          <h2 id="techTitle">Из свитка сенсея</h2>
         </header>
 
         <ol class="techniques">
           <li class="technique" data-reveal>
-            <h3>Secret Art: Offer Letter Summoning</h3>
-            <p class="seals" aria-label="Hand seals: Tiger, Boar, Ram"><span>Tiger</span><span>Boar</span><span>Ram</span></p>
-            <p>Summons a signed offer within 3–5 business days.*</p>
+            <h3>Секретная техника: Призыв оффера</h3>
+            <p class="seals" aria-label="Печати: Тигр, Кабан, Баран"><span>Тигр</span><span>Кабан</span><span>Баран</span></p>
+            <p>Призывает подписанный оффер в течение 3–5 рабочих дней.*</p>
           </li>
           <li class="technique" data-reveal>
-            <h3>Sealing Art: Impostor Lock</h3>
-            <p class="seals" aria-label="Hand seals: Snake, Ox, Dog"><span>Snake</span><span>Ox</span><span>Dog</span></p>
-            <p>Locks impostor syndrome away until at least the end of probation.</p>
+            <h3>Техника печати: Замок для самозванца</h3>
+            <p class="seals" aria-label="Печати: Змея, Бык, Собака"><span>Змея</span><span>Бык</span><span>Собака</span></p>
+            <p>Запирает синдром самозванца как минимум до конца испытательного срока.</p>
           </li>
           <li class="technique" data-reveal>
-            <h3>Hidden Art: Thousand Endorsements Aura</h3>
-            <p class="seals" aria-label="Hand seals: Dragon, Bird"><span>Dragon</span><span>Bird</span></p>
-            <p>Recruiters sense your skills from across the job board.</p>
+            <h3>Скрытая техника: Аура тысячи рекомендаций</h3>
+            <p class="seals" aria-label="Печати: Дракон, Птица"><span>Дракон</span><span>Птица</span></p>
+            <p>Рекрутеры чувствуют твои навыки даже с другого конца сайта вакансий.</p>
           </li>
           <li class="technique" data-reveal>
-            <h3>Forbidden Art: Counter-Offer Gambit</h3>
-            <p class="seals" aria-label="Hand seals: Monkey, Rat, Tiger, Horse"><span>Monkey</span><span>Rat</span><span>Tiger</span><span>Horse</span></p>
-            <p>Raises the salary band. Drains a lot of HR’s patience — use responsibly.</p>
+            <h3>Запретная техника: Гамбит встречного оффера</h3>
+            <p class="seals" aria-label="Печати: Обезьяна, Крыса, Тигр, Лошадь"><span>Обезьяна</span><span>Крыса</span><span>Тигр</span><span>Лошадь</span></p>
+            <p>Поднимает зарплатную вилку. Сильно истощает терпение HR — используй с умом.</p>
           </li>
         </ol>
-        <p class="footnote" data-reveal>* Business days are counted in the spirit realm.</p>
+        <p class="footnote" data-reveal>* Рабочие дни считаются по календарю мира духов.</p>
       </section>
 
       <section class="block" data-glyph="成" data-glyph-sub="仕事成功" aria-labelledby="stepsTitle">
         <header class="block-head" data-reveal>
-          <p class="kicker"><span lang="ja">手順</span><span>How it works</span></p>
-          <h2 id="stepsTitle">Three steps to a buffed you</h2>
+          <p class="kicker"><span lang="ja">手順</span><span>Как это работает</span></p>
+          <h2 id="stepsTitle">Три шага к прокачанному тебе</h2>
         </header>
 
         <ol class="steps">
           <li class="step" data-reveal>
-            <span class="step-num">壱</span>
+            <span class="step-num" lang="ja">壱</span>
             <div>
-              <h3>Name the battle</h3>
-              <p>Tell the sensei what’s coming: interview, performance review, demo day or a dentist appointment.</p>
+              <h3>Назови битву</h3>
+              <p>Расскажи сенсею, что тебя ждёт: собеседование, ревью, демо-день или визит к стоматологу.</p>
             </div>
           </li>
           <li class="step" data-reveal>
-            <span class="step-num">弐</span>
+            <span class="step-num" lang="ja">弐</span>
             <div>
-              <h3>Hand seals</h3>
-              <p>The sensei weaves the seals and opens the spell circle — in person or over a video call.</p>
+              <h3>Ручные печати</h3>
+              <p>Сенсей складывает печати и открывает круг заклинания — вживую или по видеосвязи.</p>
             </div>
           </li>
           <li class="step" data-reveal>
-            <span class="step-num">参</span>
+            <span class="step-num" lang="ja">参</span>
             <div>
-              <h3>Walk in buffed</h3>
-              <p>Status icons appear above your head (visible only to you). Go get that offer.</p>
+              <h3>Иди в бой с баффами</h3>
+              <p>Иконки статусов появятся над твоей головой (видны только тебе). Иди и забирай оффер.</p>
             </div>
           </li>
         </ol>
       </section>
 
       <footer class="site-footer" data-reveal>
-        <p>Paid in coffee, ramen or cookies &bull; first trial buff is free</p>
+        <p>Оплата кофе, раменом или печеньками &bull; первый пробный бафф бесплатно</p>
         <p class="footer-note">
-          Results not guaranteed &bull; effects may vary by recruiter &bull; not legally binding.<br />
-          Side effects may include unshakeable confidence and spontaneous hand seals in meetings.
+          Результат не гарантирован &bull; эффект зависит от рекрутера &bull; не имеет юридической силы.<br />
+          Побочные эффекты: непоколебимая уверенность и спонтанные ручные печати на созвонах.
         </p>
       </footer>
     </div>

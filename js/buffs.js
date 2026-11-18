@@ -118,19 +118,19 @@ document.querySelectorAll("[data-reveal]").forEach((el) => revealObserver.observ
 // ---- status-effect HUD ----------------------------------------------------------
 
 const DEBUFFS = [
-  { icon: "😩", label: "Monday fatigue" },
-  { icon: "🫥", label: "Impostor syndrome" },
-  { icon: "📭", label: "“We’ll get back to you” curse" },
+  { icon: "😩", label: "Усталость понедельника" },
+  { icon: "🫥", label: "Синдром самозванца" },
+  { icon: "📭", label: "Проклятие «Мы вам перезвоним»" },
 ];
 
 const BUFFS = [
-  { icon: "🍀", label: "+25 Luck", time: "24h" },
-  { icon: "🦁", label: "+20 Confidence", time: "until offer" },
-  { icon: "🗣️", label: "+15 Eloquence", time: "1 call" },
-  { icon: "🛡️", label: "Awkward-silence immunity", time: "∞" },
+  { icon: "🍀", label: "+25 к удаче", time: "24 ч" },
+  { icon: "🦁", label: "+20 к уверенности", time: "до оффера" },
+  { icon: "🗣️", label: "+15 к красноречию", time: "1 звонок" },
+  { icon: "🛡️", label: "Иммунитет к неловкому молчанию", time: "∞" },
 ];
 
-const SEALS = ["Tiger", "Boar", "Ram"];
+const SEALS = ["Тигр", "Кабан", "Баран"];
 const SEAL_STEP_MS = reduceMotion ? 0 : 420;
 const DISPEL_MS = reduceMotion ? 0 : 450;
 const CAST_GLOW_MS = 1600;
@@ -166,7 +166,7 @@ function showDebuffs() {
   buffed = false;
   effectsEl.replaceChildren(...DEBUFFS.map((d, i) => chip(d, "debuff", i)));
   sealTrailEl.textContent = "";
-  castBtn.textContent = "Cast a free trial buff";
+  castBtn.textContent = "Наложить бесплатный пробный бафф";
 }
 
 function burst() {
@@ -186,7 +186,7 @@ function burst() {
 
 async function cast() {
   castBtn.disabled = true;
-  castBtn.textContent = "Weaving hand seals…";
+  castBtn.textContent = "Складываю печати…";
   stage.classList.add("casting");
 
   const trail = [];
@@ -200,11 +200,11 @@ async function cast() {
   await wait(DISPEL_MS);
 
   effectsEl.replaceChildren(...BUFFS.map((b, i) => chip(b, "buff", i)));
-  sealTrailEl.textContent = `Debuffs cleansed · ${BUFFS.length} buffs applied`;
+  sealTrailEl.textContent = `Дебаффы сняты · наложено баффов: ${BUFFS.length}`;
   burst();
 
   buffed = true;
-  castBtn.textContent = "Reset to cursed state";
+  castBtn.textContent = "Вернуть проклятия";
   castBtn.disabled = false;
   setTimeout(() => stage.classList.remove("casting"), CAST_GLOW_MS);
 }

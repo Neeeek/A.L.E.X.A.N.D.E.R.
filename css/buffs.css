@@ -33,7 +33,7 @@
   --glass-strong: rgba(14, 21, 40, 0.82);
   --glass-line: rgba(143, 233, 239, 0.18);
 
-  --font-display: "Oxanium", "Segoe UI", sans-serif;
+  --font-display: "Exo 2", "Segoe UI", sans-serif;
   --font-body: "Manrope", "Segoe UI", sans-serif;
   --font-jp: "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
   --font-mono: ui-monospace, "Cascadia Mono", Menlo, monospace;
@@ -352,7 +352,7 @@ h3 {
 }
 
 .hero-title {
-  font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+  font-size: clamp(2.4rem, 5vw, 4.1rem);
   font-weight: 800;
   letter-spacing: -0.01em;
   margin-bottom: 1.1rem;
