@@ -18,7 +18,8 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥷</text></svg>" />
   <link rel="preload" as="image" href="assets/1-cutout.webp" />
-  <link rel="stylesheet" href="css/buffs.css" />
+  <!-- bump ?v= whenever buffs.css or buffs.js change, so browsers don't mix cached old files with new HTML -->
+  <link rel="stylesheet" href="css/buffs.css?v=2" />
 </head>
 <body>
   <!-- backdrop: the photo itself, blurred into a colour field, plus drifting kanji -->
@@ -295,6 +296,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <script type="module" src="js/buffs.js"></script>
+  <script type="module" src="js/buffs.js?v=2"></script>
 </body>
 </html>
