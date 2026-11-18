@@ -1,0 +1,1034 @@
+/* ==========================================================================
+   A.L.E.X.A.N.D.E.R. Buff Dojo
+   Palette sampled from assets/1.jpg:
+     cap navy #293653 · jacket grey #505660 · jacket stripe #972930
+     shirt teal #1a4b59 · spell glow #92dbe1 / core #c7f7f8 · wall #7a9dab
+   ========================================================================== */
+
+:root {
+  --night: #0a0f1d;
+  --navy: #141d33;
+  --cap: #293653;
+  --steel: #505660;
+  --shirt: #1a4b59;
+  --wall: #7a9dab;
+
+  --chakra: #8fe9ef;
+  --chakra-core: #c7f7f8;
+  --chakra-deep: #3fc6d0;
+  --chakra-a12: rgba(143, 233, 239, 0.12);
+  --chakra-a25: rgba(143, 233, 239, 0.25);
+  --chakra-a45: rgba(143, 233, 239, 0.45);
+
+  --stripe: #c8323b;
+  --stripe-ink: #ff8f95;
+  --stripe-a15: rgba(200, 50, 59, 0.15);
+  --stripe-a45: rgba(200, 50, 59, 0.5);
+
+  --ink: #eef6f8;
+  --ink-dim: rgba(222, 236, 240, 0.74);
+  --ink-faint: rgba(222, 236, 240, 0.5);
+
+  --glass: rgba(16, 25, 46, 0.62);
+  --glass-strong: rgba(14, 21, 40, 0.82);
+  --glass-line: rgba(143, 233, 239, 0.18);
+
+  --font-display: "Oxanium", "Segoe UI", sans-serif;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+  --font-jp: "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", Menlo, monospace;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* driven by js/buffs.js */
+  --p: 0;      /* page scroll progress 0..1 */
+  --hero: 0;   /* progress through the first screen 0..1 */
+  --ry: 0deg;  /* figure rotation */
+  --rx: 0deg;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--night);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+[lang="ja"] {
+  font-family: var(--font-jp);
+}
+
+.svg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ---------- backdrop: the photo as a colour field ---------- */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.backdrop-photo {
+  position: absolute;
+  inset: -12%;
+  background: url("../assets/1.jpg") 30% 40% / cover no-repeat;
+  filter: blur(46px) saturate(1.35) brightness(0.42);
+  transform: scale(1.08) translateY(calc(var(--p) * -5%));
+}
+
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 70% at 26% 52%, rgba(63, 198, 208, 0.16), transparent 70%),
+    radial-gradient(ellipse 90% 80% at 50% 40%, transparent 30%, rgba(10, 15, 29, 0.78) 100%),
+    linear-gradient(180deg, rgba(10, 15, 29, 0.2), rgba(10, 15, 29, 0.55));
+}
+
+.backdrop-kanji span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  writing-mode: vertical-rl;
+  font-family: var(--font-jp);
+  font-size: calc(var(--size) * clamp(1.4rem, 2.6vw, 2.4rem));
+  letter-spacing: 0.3em;
+  color: var(--chakra);
+  opacity: 0.16;
+  text-shadow: 0 0 18px var(--chakra-a45);
+  transform: translateY(calc(var(--p) * var(--speed) * -1px));
+  white-space: nowrap;
+}
+
+/* scroll progress, drawn as a thin chakra line */
+.chakra-bar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--chakra-deep), var(--chakra-core) 70%, var(--stripe));
+  box-shadow: 0 0 12px var(--chakra-a45);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p));
+}
+
+/* ---------- layout ---------- */
+
+.layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.stage-col {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+
+.content-col {
+  padding: 0 clamp(1.25rem, 4vw, 3.5rem) 4rem clamp(0.5rem, 2vw, 1.5rem);
+}
+
+/* ---------- stage ---------- */
+
+.stage {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  perspective: 1400px;
+}
+
+.stage-glyph {
+  position: absolute;
+  top: 9vh;
+  left: clamp(1rem, 4vw, 3rem);
+  z-index: 3;
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  writing-mode: vertical-rl;
+  font-family: var(--font-jp);
+  color: var(--chakra-core);
+  pointer-events: none;
+}
+
+.stage-glyph-main {
+  font-size: clamp(2.6rem, 5vw, 4.4rem);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 22px var(--chakra), 0 0 50px var(--chakra-a45);
+}
+
+.stage-glyph-sub {
+  font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+  letter-spacing: 0.35em;
+  color: var(--chakra);
+  opacity: 0.8;
+}
+
+.stage-glyph.swap .stage-glyph-main,
+.stage-glyph.swap .stage-glyph-sub {
+  animation: glyphIn 0.7s var(--ease-out);
+}
+
+@keyframes glyphIn {
+  from { opacity: 0; filter: blur(8px); transform: translateY(-14px) scale(1.15); }
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+
+.rig {
+  position: relative;
+  width: min(100%, 66vh);
+  aspect-ratio: 896 / 1195;
+}
+
+.aura {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 120%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(63, 198, 208, 0.28), rgba(63, 198, 208, 0.06) 45%, transparent 68%);
+  opacity: 0.75;
+  transition: opacity 0.4s ease;
+}
+
+.spell-wrap {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 135%;
+  aspect-ratio: 1;
+  color: var(--chakra);
+  opacity: 0.55;
+  transform:
+    translate(-50%, -50%)
+    rotate(calc(var(--p) * 300deg))
+    scale(calc(0.94 + var(--p) * 0.14));
+  filter: drop-shadow(0 0 6px var(--chakra-a45));
+  transition: opacity 0.4s ease;
+}
+
+.spell {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  will-change: transform;
+}
+
+.spell-text {
+  font-family: var(--font-jp);
+}
+
+.spell-outer { animation: spin 90s linear infinite; }
+.spell-mid { animation: spin 140s linear infinite reverse; }
+.spell-inner { animation: spin 60s linear infinite; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.figure-wrap {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateY(var(--ry)) rotateX(var(--rx));
+  will-change: transform;
+}
+
+.figure {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(to top, transparent 0, #000 13%);
+  mask-image: linear-gradient(to top, transparent 0, #000 13%);
+  filter: drop-shadow(0 0 26px rgba(143, 233, 239, 0.22)) drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45));
+  animation: float 7s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* cast: circle flares and spins, figure flashes */
+.stage.casting .spell-wrap {
+  opacity: 1;
+  color: var(--chakra-core);
+  filter: drop-shadow(0 0 14px var(--chakra));
+}
+
+.stage.casting .spell-outer { animation-duration: 3s; }
+.stage.casting .spell-mid { animation-duration: 4s; }
+.stage.casting .spell-inner { animation-duration: 2s; }
+.stage.casting .aura { opacity: 1; }
+
+.stage.casting .figure {
+  animation: float 7s ease-in-out infinite, flash 1.4s ease-out;
+}
+
+@keyframes flash {
+  0% { filter: drop-shadow(0 0 26px rgba(143, 233, 239, 0.22)) brightness(1); }
+  30% { filter: drop-shadow(0 0 50px var(--chakra)) brightness(1.35); }
+  100% { filter: drop-shadow(0 0 26px rgba(143, 233, 239, 0.22)) brightness(1); }
+}
+
+/* ---------- typography ---------- */
+
+.kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.75rem;
+  margin: 0 0 0.9rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--chakra);
+}
+
+.kicker [lang="ja"] {
+  letter-spacing: 0.25em;
+  color: var(--chakra-core);
+  text-shadow: 0 0 12px var(--chakra-a45);
+}
+
+.kicker [lang="ja"]::after {
+  content: "";
+  display: inline-block;
+  width: 1.6rem;
+  height: 2px;
+  margin-left: 0.75rem;
+  vertical-align: middle;
+  background: var(--stripe);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.08;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.hero-title {
+  font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.1rem;
+}
+
+.glow {
+  color: var(--chakra-core);
+  text-shadow: 0 0 18px var(--chakra), 0 0 48px var(--chakra-a45);
+}
+
+.hero-lead {
+  max-width: 34rem;
+  margin: 0 0 1.75rem;
+  font-size: 1.08rem;
+  color: var(--ink-dim);
+}
+
+.acronym {
+  margin: 1.5rem 0 0;
+  max-width: 32rem;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.acronym b {
+  color: var(--chakra);
+}
+
+/* ---------- intro ---------- */
+
+.intro {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 0 5rem;
+  position: relative;
+}
+
+.scroll-hint {
+  position: absolute;
+  left: 0;
+  bottom: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  opacity: calc(1 - var(--hero) * 3);
+}
+
+.scroll-hint span {
+  position: relative;
+  width: 1px;
+  height: 2.5rem;
+  background: var(--chakra-a25);
+  overflow: hidden;
+}
+
+.scroll-hint span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -40%;
+  width: 100%;
+  height: 40%;
+  background: var(--chakra-core);
+  animation: drip 1.8s var(--ease-out) infinite;
+}
+
+@keyframes drip {
+  to { top: 100%; }
+}
+
+/* ---------- HUD ---------- */
+
+.hud {
+  position: relative;
+  max-width: 34rem;
+  padding: 1.1rem;
+  border-radius: 18px;
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.7);
+}
+
+.hud::before {
+  content: "";
+  position: absolute;
+  left: 1.1rem;
+  top: -1px;
+  width: 3rem;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--stripe);
+}
+
+.hud-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.hud-title {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.hud-seals {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--chakra);
+}
+
+.hud-effects {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2.2rem;
+}
+
+.fx {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.34rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.fx.debuff {
+  background: var(--stripe-a15);
+  border: 1px solid var(--stripe-a45);
+  color: var(--stripe-ink);
+}
+
+.fx.buff {
+  background: var(--chakra-a12);
+  border: 1px solid var(--chakra-a45);
+  color: var(--chakra-core);
+  box-shadow: 0 0 14px -4px var(--chakra-a45);
+  animation: fxPop 0.45s var(--ease-bounce) both;
+  animation-delay: calc(var(--i, 0) * 110ms);
+}
+
+.fx-time {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  opacity: 0.7;
+}
+
+.fx.dispel {
+  animation: fxDispel 0.45s ease-in forwards;
+}
+
+@keyframes fxPop {
+  from { opacity: 0; transform: scale(0.6) translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fxDispel {
+  to { opacity: 0; transform: scale(0.7) translateY(-8px); filter: blur(4px); }
+}
+
+.cast-btn {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--night);
+  background: linear-gradient(90deg, var(--chakra-deep), var(--chakra) 50%, var(--chakra-core));
+  border: none;
+  padding: 0.85rem 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(199, 247, 248, 0.4) inset, 0 14px 34px -14px var(--chakra);
+  transition: transform 0.2s var(--ease-bounce), filter 0.2s ease;
+}
+
+.cast-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -40%;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  animation: sheen 3.6s ease-in-out infinite;
+}
+
+@keyframes sheen {
+  0%, 60% { left: -40%; }
+  100% { left: 130%; }
+}
+
+.cast-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.cast-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.cast-btn:disabled {
+  cursor: progress;
+  filter: saturate(0.6) brightness(0.85);
+}
+
+.cast-btn:focus-visible {
+  outline: 3px solid var(--chakra-core);
+  outline-offset: 3px;
+}
+
+/* ---------- content blocks ---------- */
+
+.block {
+  padding: 5rem 0 2rem;
+}
+
+.block-head {
+  margin-bottom: 1.75rem;
+}
+
+.block-head h2 {
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+  font-weight: 800;
+}
+
+.cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.1rem;
+  padding: 1.4rem 1.3rem 1.2rem;
+  border-radius: 20px;
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* the red stripe from the jacket */
+.card::before {
+  content: "";
+  position: absolute;
+  left: 1.3rem;
+  top: -1px;
+  width: 2.75rem;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--stripe);
+}
+
+.card:hover {
+  border-color: var(--chakra-a45);
+  box-shadow: 0 0 40px -18px var(--chakra);
+}
+
+.card.featured {
+  background: linear-gradient(160deg, rgba(26, 75, 89, 0.7), var(--glass) 55%);
+  border-color: var(--chakra-a45);
+}
+
+.card-tag {
+  position: absolute;
+  top: -0.7rem;
+  right: 1.2rem;
+  padding: 0.18rem 0.65rem;
+  border-radius: 6px;
+  background: var(--chakra);
+  color: var(--night);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.seal-icon {
+  position: relative;
+  width: 3.6rem;
+  height: 3.6rem;
+  color: var(--chakra);
+  filter: drop-shadow(0 0 6px var(--chakra-a45));
+}
+
+.seal-icon svg {
+  width: 100%;
+  height: 100%;
+  animation: spin 24s linear infinite;
+}
+
+.seal-icon span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-top: 0.2rem;
+  font-family: var(--font-jp);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--chakra-core);
+}
+
+.seal-icon.red {
+  color: var(--stripe-ink);
+  filter: drop-shadow(0 0 6px var(--stripe-a45));
+}
+
+.seal-icon.red span {
+  color: #ffd2d4;
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.45rem;
+}
+
+.card-body > p {
+  margin: 0 0 0.9rem;
+  color: var(--ink-dim);
+  font-size: 0.94rem;
+}
+
+.effects {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.effects li {
+  position: relative;
+  padding-left: 1.35rem;
+}
+
+.effects li::before {
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+}
+
+.effects .up { color: var(--chakra-core); }
+.effects .up::before { content: "▲"; font-size: 0.65rem; top: 0.2rem; color: var(--chakra); }
+
+.effects .down {
+  color: var(--stripe-ink);
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 143, 149, 0.55);
+}
+.effects .down::before { content: "✕"; top: 0; }
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0;
+  padding-top: 0.8rem;
+  border-top: 1px dashed var(--glass-line);
+}
+
+.meta dt {
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.meta dd {
+  margin: 0.1rem 0 0;
+  font-weight: 700;
+  color: var(--chakra-core);
+}
+
+.meta div:last-child {
+  text-align: right;
+}
+
+/* ---------- techniques ---------- */
+
+.techniques {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.technique {
+  padding: 1.1rem 1.2rem;
+  border-radius: 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  border-left: 3px solid var(--chakra-a45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.technique h3 {
+  font-size: 1.08rem;
+  margin-bottom: 0.55rem;
+}
+
+.technique > p:last-child {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ink-dim);
+}
+
+.seals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.55rem;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.seals span {
+  padding: 0.16rem 0.55rem;
+  border-radius: 6px;
+  background: var(--chakra-a12);
+  border: 1px solid var(--chakra-a25);
+  color: var(--chakra-core);
+}
+
+.seals span + span {
+  position: relative;
+  margin-left: 1.05rem;
+}
+
+.seals span + span::before {
+  content: "→";
+  position: absolute;
+  left: -1.1rem;
+  color: var(--ink-faint);
+}
+
+.footnote {
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+/* ---------- steps ---------- */
+
+.steps {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.steps::before {
+  content: "";
+  position: absolute;
+  left: 1.35rem;
+  top: 1.5rem;
+  bottom: 1.5rem;
+  width: 2px;
+  background: linear-gradient(180deg, var(--chakra), var(--chakra-a12) 60%, var(--stripe));
+  box-shadow: 0 0 10px var(--chakra-a45);
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.1rem;
+  align-items: start;
+}
+
+.step-num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--glass-strong);
+  border: 1px solid var(--chakra-a45);
+  box-shadow: 0 0 18px -4px var(--chakra);
+  font-family: var(--font-jp);
+  font-weight: 700;
+  color: var(--chakra-core);
+}
+
+.step h3 {
+  font-size: 1.15rem;
+  margin: 0.45rem 0 0.3rem;
+}
+
+.step p {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: 0.94rem;
+}
+
+/* ---------- footer ---------- */
+
+.site-footer {
+  margin-top: 5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-line);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.site-footer p {
+  margin: 0 0 0.4rem;
+}
+
+.footer-note {
+  opacity: 0.75;
+}
+
+/* ---------- scroll reveal ---------- */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(6px);
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.8s var(--ease-out),
+    filter 0.8s var(--ease-out);
+  transition-delay: calc(var(--d, 0) * 110ms);
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ---------- mobile: figure stays behind the content ---------- */
+
+@media (max-width: 880px) {
+  .layout {
+    display: block;
+  }
+
+  .stage-col {
+    z-index: 0;
+    margin-bottom: -100vh;
+    margin-bottom: -100svh;
+    opacity: calc(1 - var(--hero) * 0.65);
+  }
+
+  /* figure sits high so the first screen shows the face and the hand seal */
+  .stage {
+    align-items: flex-start;
+    padding-top: 2.5rem;
+  }
+
+  .rig {
+    width: min(100%, 64svh, 520px);
+  }
+
+  .stage-glyph {
+    left: auto;
+    right: 1rem;
+    top: 4.5rem;
+  }
+
+  .content-col {
+    position: relative;
+    z-index: 1;
+    padding: 0 1rem 3rem;
+  }
+
+  .intro {
+    justify-content: flex-end;
+    padding: 58svh 0 4.5rem;
+  }
+
+  /* keep text readable where it overlaps the figure */
+  .intro::before {
+    content: "";
+    position: absolute;
+    inset: 44svh -1rem 0;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgba(10, 15, 29, 0.82) 22%,
+      rgba(10, 15, 29, 0.92) 82%,
+      rgba(10, 15, 29, 0)
+    );
+  }
+
+  .block-head {
+    text-shadow: 0 2px 18px rgba(10, 15, 29, 0.9);
+  }
+
+  .hero-title {
+    font-size: clamp(2.3rem, 11vw, 3.2rem);
+  }
+
+  /* the intro is taller than the screen here, so the hint would sit off-screen */
+  .scroll-hint {
+    display: none;
+  }
+
+  .block {
+    padding-top: 3.5rem;
+  }
+
+  .card {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    background: var(--glass-strong);
+  }
+
+  .technique {
+    background: var(--glass-strong);
+  }
+
+  .backdrop-kanji span:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0s !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

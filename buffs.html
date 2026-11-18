@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.L.E.X.A.N.D.E.R. Buff Dojo</title>
+  <meta name="description" content="Pre-interview blessings, stat buffs and a full debuff cleanse — cast with hand seals." />
+  <!-- unlisted page: not linked from the main page and kept out of search results -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0a0f1d" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;700&family=Oxanium:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥷</text></svg>" />
+  <link rel="preload" as="image" href="assets/1-cutout.webp" />
+  <link rel="stylesheet" href="css/buffs.css" />
+</head>
+<body>
+  <!-- backdrop: the photo itself, blurred into a colour field, plus drifting kanji -->
+  <div class="backdrop" id="backdrop" aria-hidden="true">
+    <div class="backdrop-photo"></div>
+    <div class="backdrop-kanji">
+      <span style="--x: 4%; --y: 14%; --size: 1.1; --speed: 160">仕事成功</span>
+      <span style="--x: 92%; --y: 8%; --size: 0.8; --speed: 260">開運招福</span>
+      <span style="--x: 47%; --y: 62%; --size: 0.7; --speed: 340">厄除け</span>
+      <span style="--x: 95%; --y: 58%; --size: 1; --speed: 200">面接成功</span>
+      <span style="--x: 10%; --y: 78%; --size: 0.75; --speed: 420">祝福</span>
+    </div>
+  </div>
+
+  <div class="chakra-bar" id="chakraBar" aria-hidden="true"></div>
+
+  <svg width="0" height="0" class="svg-defs" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- small seal: triangle inside a ticked circle, like the 福 circle in the photo -->
+      <symbol id="mini-seal" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.4" />
+        <circle cx="32" cy="32" r="25" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="0.8 3.1" opacity="0.7" />
+        <circle cx="32" cy="32" r="21" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.6" />
+        <polygon points="32,11 50.2,42.5 13.8,42.5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.55" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <main class="layout">
+    <!-- STAGE: the cut-out figure, sticky while the page scrolls -->
+    <div class="stage-col" id="stageCol">
+      <div class="stage" id="stage">
+        <div class="stage-glyph" aria-hidden="true">
+          <span class="stage-glyph-main" id="stageGlyph">福</span>
+          <span class="stage-glyph-sub" id="stageGlyphSub">開運招福</span>
+        </div>
+
+        <div class="rig">
+          <div class="aura" aria-hidden="true"></div>
+
+          <!-- three stacked layers so each ring spins on the compositor without repainting -->
+          <div class="spell-wrap" aria-hidden="true">
+            <svg class="spell spell-outer" viewBox="0 0 600 600">
+              <defs>
+                <path id="ringOuter" d="M300 300 m-266 0 a266 266 0 1 1 532 0 a266 266 0 1 1 -532 0" />
+              </defs>
+              <circle cx="300" cy="300" r="292" fill="none" stroke="currentColor" stroke-width="1.6" />
+              <circle cx="300" cy="300" r="250" fill="none" stroke="currentColor" stroke-width="1" />
+              <text class="spell-text" font-size="22" fill="currentColor">
+                <textPath href="#ringOuter" textLength="1660" lengthAdjust="spacing">仕事成功 ✦ 面接成功 ✦ 開運招福 ✦ 厄除け ✦ 祝福 ✦ バフ ✦ デバフ解除 ✦ 仕事成功 ✦ 面接成功 ✦ 開運招福 ✦ 厄除け ✦ 祝福 ✦ バフ ✦ デバフ解除 ✦</textPath>
+              </text>
+            </svg>
+            <svg class="spell spell-mid" viewBox="0 0 600 600">
+              <circle cx="300" cy="300" r="238" fill="none" stroke="currentColor" stroke-width="8" stroke-dasharray="1.2 11.3" opacity="0.6" />
+              <circle cx="300" cy="300" r="226" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.7" />
+              <polygon points="300,74 495.7,413 104.3,413" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.75" />
+              <polygon points="300,526 495.7,187 104.3,187" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.75" />
+              <g fill="none" stroke="currentColor" stroke-width="1">
+                <circle cx="300" cy="74" r="13" />
+                <circle cx="495.7" cy="413" r="13" />
+                <circle cx="104.3" cy="413" r="13" />
+                <circle cx="300" cy="526" r="13" />
+                <circle cx="495.7" cy="187" r="13" />
+                <circle cx="104.3" cy="187" r="13" />
+              </g>
+            </svg>
+            <svg class="spell spell-inner" viewBox="0 0 600 600">
+              <defs>
+                <path id="ringInner" d="M300 300 m-104 0 a104 104 0 1 1 208 0 a104 104 0 1 1 -208 0" />
+              </defs>
+              <circle cx="300" cy="300" r="122" fill="none" stroke="currentColor" stroke-width="1" />
+              <circle cx="300" cy="300" r="88" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="3 5" />
+              <text class="spell-text" font-size="14" fill="currentColor">
+                <textPath href="#ringInner" textLength="640" lengthAdjust="spacing">力 ✦ 運 ✦ 福 ✦ 勝 ✦ 守 ✦ 成 ✦ 力 ✦ 運 ✦ 福 ✦ 勝 ✦ 守 ✦ 成 ✦ 力 ✦ 運 ✦ 福 ✦ 勝 ✦ 守 ✦ 成 ✦</textPath>
+              </text>
+            </svg>
+          </div>
+
+          <div class="figure-wrap">
+            <img
+              class="figure"
+              src="assets/1-cutout.webp"
+              width="896"
+              height="1195"
+              alt="A.L.E.X.A.N.D.E.R. in a cap and grey jacket, forming a hand seal while glowing spell circles swirl around him"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content-col">
+      <section class="intro" data-glyph="福" data-glyph-sub="開運招福">
+        <p class="kicker" data-reveal style="--d: 0">
+          <span lang="ja">祝福 · 強化 · 浄化</span>
+          <span>A.L.E.X.A.N.D.E.R. Buff Dojo</span>
+        </p>
+        <h1 class="hero-title" data-reveal style="--d: 1">
+          Get blessed.<br />Get buffed.<br /><span class="glow">Get hired.</span>
+        </h1>
+        <p class="hero-lead" data-reveal style="--d: 2">
+          Pre-interview blessings, stat buffs and a full debuff cleanse — woven with hand seals and
+          glowing spell circles, straight out of your favourite ninja anime.
+        </p>
+
+        <div class="hud" data-reveal style="--d: 3">
+          <div class="hud-head">
+            <span class="hud-title">Your status effects</span>
+            <span class="hud-seals" id="sealTrail" aria-live="polite"></span>
+          </div>
+          <ul class="hud-effects" id="hudEffects"></ul>
+          <button class="cast-btn" id="castBtn" type="button">Cast a free trial buff</button>
+        </div>
+
+        <p class="acronym" data-reveal style="--d: 4">
+          <b>A</b>uspicious <b>L</b>uck <b>E</b>nchantments, e<b>X</b>p <b>A</b>mplification,
+          <b>N</b>egativity <b>D</b>ispel &amp; <b>E</b>mergency <b>R</b>e-buffs
+        </p>
+
+        <div class="scroll-hint" aria-hidden="true"><span></span>scroll to channel chakra</div>
+      </section>
+
+      <section class="block" data-glyph="強" data-glyph-sub="強化" aria-labelledby="servicesTitle">
+        <header class="block-head" data-reveal>
+          <p class="kicker"><span lang="ja">サービス</span><span>Services</span></p>
+          <h2 id="servicesTitle">Three ways to enter the battlefield stronger</h2>
+        </header>
+
+        <div class="cards">
+          <article class="card" data-reveal>
+            <div class="seal-icon" aria-hidden="true">
+              <svg><use href="#mini-seal" /></svg><span>福</span>
+            </div>
+            <div class="card-body">
+              <h3>Blessing of Great Fortune</h3>
+              <p>
+                A full-body luck enchantment sealed with a three-seal combo. Recommended before
+                interviews, demos, Friday deploys and any meeting that could have been an email.
+              </p>
+              <ul class="effects">
+                <li class="up">+25 Luck</li>
+                <li class="up">+10 Charisma</li>
+                <li class="up">Coffee machine always works</li>
+              </ul>
+              <dl class="meta">
+                <div><dt>Duration</dt><dd>24 h</dd></div>
+                <div><dt>Price</dt><dd>1 coffee ☕</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <article class="card featured" data-reveal>
+            <span class="card-tag">Most cast</span>
+            <div class="seal-icon" aria-hidden="true">
+              <svg><use href="#mini-seal" /></svg><span>強</span>
+            </div>
+            <div class="card-body">
+              <h3>Pre-Interview Buff Pack</h3>
+              <p>
+                Five stacking buffs applied minutes before you join the call. Works in person and
+                through any webcam — chakra travels fine over Wi-Fi.
+              </p>
+              <ul class="effects">
+                <li class="up">+20 Confidence</li>
+                <li class="up">+15 Eloquence</li>
+                <li class="up">+10 Eye contact through the camera</li>
+                <li class="up">Resistance to “Where do you see yourself in 5 years?”</li>
+                <li class="up">Immunity to awkward silence</li>
+              </ul>
+              <dl class="meta">
+                <div><dt>Duration</dt><dd>Until the offer</dd></div>
+                <div><dt>Price</dt><dd>1 bowl of ramen 🍜</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <article class="card" data-reveal>
+            <div class="seal-icon red" aria-hidden="true">
+              <svg><use href="#mini-seal" /></svg><span>浄</span>
+            </div>
+            <div class="card-body">
+              <h3>Total Debuff Cleanse</h3>
+              <p>
+                A purification seal that wipes every negative status effect in one cast. No potions,
+                no cooldown anxiety, no lingering curses.
+              </p>
+              <ul class="effects">
+                <li class="down">Impostor syndrome</li>
+                <li class="down">Monday fatigue</li>
+                <li class="down">Rejection-email curse</li>
+                <li class="down">“We’ll get back to you” poison</li>
+                <li class="down">Stuck-on-mute paralysis</li>
+              </ul>
+              <dl class="meta">
+                <div><dt>Cooldown</dt><dd>1 week</dd></div>
+                <div><dt>Price</dt><dd>2 cookies 🍪</dd></div>
+              </dl>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="block" data-glyph="術" data-glyph-sub="秘伝の術" aria-labelledby="techTitle">
+        <header class="block-head" data-reveal>
+          <p class="kicker"><span lang="ja">術</span><span>Techniques</span></p>
+          <h2 id="techTitle">From the sensei’s scroll</h2>
+        </header>
+
+        <ol class="techniques">
+          <li class="technique" data-reveal>
+            <h3>Secret Art: Offer Letter Summoning</h3>
+            <p class="seals" aria-label="Hand seals: Tiger, Boar, Ram"><span>Tiger</span><span>Boar</span><span>Ram</span></p>
+            <p>Summons a signed offer within 3–5 business days.*</p>
+          </li>
+          <li class="technique" data-reveal>
+            <h3>Sealing Art: Impostor Lock</h3>
+            <p class="seals" aria-label="Hand seals: Snake, Ox, Dog"><span>Snake</span><span>Ox</span><span>Dog</span></p>
+            <p>Locks impostor syndrome away until at least the end of probation.</p>
+          </li>
+          <li class="technique" data-reveal>
+            <h3>Hidden Art: Thousand Endorsements Aura</h3>
+            <p class="seals" aria-label="Hand seals: Dragon, Bird"><span>Dragon</span><span>Bird</span></p>
+            <p>Recruiters sense your skills from across the job board.</p>
+          </li>
+          <li class="technique" data-reveal>
+            <h3>Forbidden Art: Counter-Offer Gambit</h3>
+            <p class="seals" aria-label="Hand seals: Monkey, Rat, Tiger, Horse"><span>Monkey</span><span>Rat</span><span>Tiger</span><span>Horse</span></p>
+            <p>Raises the salary band. Drains a lot of HR’s patience — use responsibly.</p>
+          </li>
+        </ol>
+        <p class="footnote" data-reveal>* Business days are counted in the spirit realm.</p>
+      </section>
+
+      <section class="block" data-glyph="成" data-glyph-sub="仕事成功" aria-labelledby="stepsTitle">
+        <header class="block-head" data-reveal>
+          <p class="kicker"><span lang="ja">手順</span><span>How it works</span></p>
+          <h2 id="stepsTitle">Three steps to a buffed you</h2>
+        </header>
+
+        <ol class="steps">
+          <li class="step" data-reveal>
+            <span class="step-num">壱</span>
+            <div>
+              <h3>Name the battle</h3>
+              <p>Tell the sensei what’s coming: interview, performance review, demo day or a dentist appointment.</p>
+            </div>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step-num">弐</span>
+            <div>
+              <h3>Hand seals</h3>
+              <p>The sensei weaves the seals and opens the spell circle — in person or over a video call.</p>
+            </div>
+          </li>
+          <li class="step" data-reveal>
+            <span class="step-num">参</span>
+            <div>
+              <h3>Walk in buffed</h3>
+              <p>Status icons appear above your head (visible only to you). Go get that offer.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <footer class="site-footer" data-reveal>
+        <p>Paid in coffee, ramen or cookies &bull; first trial buff is free</p>
+        <p class="footer-note">
+          Results not guaranteed &bull; effects may vary by recruiter &bull; not legally binding.<br />
+          Side effects may include unshakeable confidence and spontaneous hand seals in meetings.
+        </p>
+      </footer>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script type="module" src="js/buffs.js"></script>
+</body>
+</html>
